@@ -1,0 +1,127 @@
+# Readme
+## Introducción
+El presente documento describe el funcionamiento de la nueva librería CI-Scrapers, así como los pasos necesarios para poder utilizarla.
+CI-Scrapers es una librería desarrollada en Typescript, habiendo tomado como base para el funcionamiento, la librería anterior: Competencia-Scrappers. El objetivo fue implementar una librería más estructurada, y que a la vez se separaran 
+
+# Tabla de Contenido
+
+# Quick Start (cómo utilizar la librería)
+Si bien próximamente se desarrollará una API que cuente con un endpoint para utilizar las fucionalidades de CI-Scrapers, por el momento sólo está desarrollada la librería por lo que para poder utilizarla es necesario acceder a su código fuente y ejecutar el proceso de depuración o debugging, especificando el competidor y el o los plugins que se requieren evaluar, con los valores de entrada que requieran esos plugins seleccionados. 
+Para ello, se deben seguir los siguientes pasos:
+1. Prerequisitos
+
+1.1 Se deben contar con los permisos para poder descargar el código fuente de CI-Scrapers desde el repositorio de MELI.
+1.2 Tener instalado en el sistema, las versiones de NodeJS 14.19.2 y npm 6.4.17 o superiores
+1.3 Tener instalado un entorno de desarrollo que permita hacer depuración (Recomendado: Visual Studio Code) 
+
+2. Instalación y Configuración
+Se debe contar con la librería descargada, en su última versión. Para ello ejecutamos desde la terminal el siguiente comando Git:
+```
+git clone git@github.com:mercadolibre/fury_ci-scrapers.git
+```
+Una vez descargado el proyecto, acceder al mismo desde el entorno de desarrollo y crear la carpeta local `.vscode` dentro de la carpeta raíz del proyecto, y dentro de la misma crear el archivo `launch.json` con el siguiente código:
+
+```json
+{
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "ts-node",
+            "type": "node",
+            "request": "launch",
+            "args": [
+                "${relativeFile}"
+            ],
+            "runtimeArgs": [
+                "-r",
+                "ts-node/register"
+            ],
+            "program": "${workspaceFolder}/local/NNN.test.ts",
+            "protocol": "inspector",
+            "internalConsoleOptions": "openOnSessionStart"
+        }
+    ]
+}
+```
+  donde `NNN`será el código del competidor a analizar (por ejemplo `FBC`para "Falabella Chile")
+
+<img width="356" alt="vista de carpeta .vscode" src="https://user-images.githubusercontent.com/92391063/179997628-021f584c-7ab9-4619-9282-49a79a94043f.png">
+
+A continuación se deben instalar las librerías y dependencias del proyecto
+Para ello, ejecutar `npm i`
+
+3. Configuración del competidor a analizar
+
+Una vez configurado el ambiente de desarrollo y seleccionado el competidor, se deben configurar los parámetros que enviaremos en la consulta. Para ello, se debe acceder a la carpeta `local`,la cual posee ejemplos de consultas de todos los competidores incluídos en CI-Scrapers. Para el ejemplo anterior FBC, debemos acceder a `FBC.test.ts`. Allí se encuentran las funciones de cada uno de los plugins que maneja para el competidor. Por ejemplo para el plugin de VIP:
+```ts
+async function vip() {
+    const vipData = await scrap({
+        requestType: 'request',
+        playerId: PLAYER.FBC,
+        processName: PROCESS.VIP,
+        itemId: '16250332'
+    });
+    console.log('vipData:', vipData);
+}
+```
+En esta función se deben configurar los parámetros de entrada requeridos por la misma. De los cuatro parámetros, sólo será necesario modificar el valor de `itemId` ya que los otros siempre serán los mismos para todos los productos de este competidor. Por lo tanto debemos contar de antemano con la información del id de item para el cual queremos obtener la información detallada. 
+
+NOTA: Para las demás funciones tampoco se deben modificar los campos `requestType`, `playerId` y `processName`
+Luego de configurados los parámetros de las funciones requeridas, se deben habilitar las mismas dentro del siguiente bloque de código de este archivo:
+```ts
+(async () => {
+    //await search();
+    await vip();
+    //await sellers();
+    //await offers();
+    //await shipping();
+})();
+```
+Como se puede observar, sólo está habilitada la función de `vip()`, las demás se encuentran comentadas, por lo que se deben descomentar las funciones de los plugins que el usuario desee analizar. 
+
+4. Pruebas de Scraping
+
+Una vez realizados los pasos anteriores, podemos proceder con la prueba de scraping. La misma se hará sobre el competidor seleccionado en `launch.json`y se utilizarán los plugins habilitados en `NNN.test.ts`. Para ello ejecutamos el debug:
+<img width="435" alt="start debugging in VSC" src="https://user-images.githubusercontent.com/92391063/180005034-f7c5bc10-b23b-42a4-8273-3bcd45f272cc.png">
+
+Por consola se podrá visualizar y analizar la respuesta del competidor a la consulta. Para el ejemplo anterior, la siguiente podría ser una respuesta exitosa:
+
+```js
+vipData: {config: {…}, data: {…}, isError: false}
+arg1: {config: {…}, data: {…}, isError: false}
+config: {requestType: 'request', playerId: 'FBC', processName: 'vip', itemId: '16250332', version: 1}
+data: {id: '16250332', own_data: {…}}
+id: '16250332'
+own_data: {title: 'Xiaomi Watch S1 Active Gl (Ocean Blue)', url: 'https://www.falabella.com/falabella-cl/product…iaomi-Watch-S1-Active-Gl-(Ocean-Blue)/16250332', image: 'https://falabella.scene7.com/is/image/Falabella/16250332_1', price: 149990, currency: 'CLP', …}
+currency: 'CLP'
+extra_data: (5) [{…}, {…}, {…}, {…}, {…}]
+0: {name: 'Tipo', value: ' Smartwatch'}
+1: {name: 'Género', value: ' Unisex'}
+2: {name: 'Ajuste del brillo', value: ' Sí'}
+3: {name: 'Alarma', value: ' Sí'}
+4: {name: 'Batería', value: ' 470&nbsp;mAh'}
+__proto__: Array(0)
+__proto__: Object
+length: 5
+features: (0) []
+image: 'https://falabella.scene7.com/is/image/Falabella/16250332_1'
+price: 149990
+title: 'Xiaomi Watch S1 Active Gl (Ocean Blue)'
+url: 'https://www.falabella.com/falabella-cl/product/16250332/Xiaomi-Watch-S1-Active-Gl-(Ocean-Blue)/16250332'
+__proto__: Object
+__proto__: Object
+isError: false
+__proto__: Object
+
+```
+
+Como se puede observar, se obtienen diversos valores correspondientes con las características del ítem, tales como precio, título, link a la URL donde se encuentra la imagen o foto del producto, entre otros.
+
+La salida, o lo que entrega cada plugin, corresponde a un objeto, con propiedades y subpropiedades (como `extra_data`), que poseen dentro más atributos (en este ejemplo, `extra_data` cuenta con más características del producto, que el competidor disponibilizó en su página).
+
+
+## subtitulo 1
+texto 1
+
+
