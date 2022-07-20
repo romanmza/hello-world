@@ -129,14 +129,15 @@ Se utiliza para obtener de un competidor y un ítem específico, la lista de ven
 
 `sellers`: Es un objeto que contendrá los vendedores para ese producto, y las características de cada uno, con el formato [seller1], [seller2], ...,[sellerN]. Cada seller contendrá:
 
-   1. `id`: ID del vendedor.
-   2. `name`: nombre del vendedor.
-   3. `permalink`: url dentro del competidor.  
-   4. `first_party`: es una bandera, indicará true si el vendedor coincide con el competidor analizado.
-   5. `fulfillment`: es una bandera que indica si el envío es gratis.
-   6. `seller_winner`: es una bandera que indica si este vendedor es el vendedor principal del producto.
+   1. `cbt`: Cross Border Trade. Se utiliza cuando el seller es internacional, es decir, de otro país distinto al del competidor.
+   2. `first_party`: es una bandera, indicará true si el vendedor coincide con el competidor analizado.
+   3. `fulfillment`: es una bandera que indica si el envío es gratis.
+   4. `id`: ID del vendedor.
+   5. `nickname`: nombre del vendedor.
+   6. `permalink`: url dentro del competidor.  
    7. `reputation`: Es un valor que indica la reputación que posee este vendedor.
-   8. `active_publications`: Es un valor que indica la cantidad de publicaciones activas que tiene este vendedor en este competidor. 
+   8. `seller_winner`: es una bandera que indica si este vendedor es el vendedor principal del producto.
+   9. `active_publications`: Es un valor que indica la cantidad de publicaciones activas que tiene este vendedor en este competidor. 
 
 ## Offers
 Este plugin se utiliza, dado un competidor, un ID de un vendedor válido dentro del mismo, y un ID de producto, para obtener una lista con las distintas formas de venta y de pago que ofrece ese vendedor para ese producto determinado, se puede obtener información sobre los medios de pago admitidos, cantidad de cuotas, tasa de interés, entre otros.
@@ -157,6 +158,31 @@ Este plugin se utiliza, dado un competidor, un ID de un vendedor válido dentro 
    8. `price`: Precio del producto.
    9. `rating`: Corresponde a la calificación del producto.
    10. `review_count`: Corresponde a la cantidad de calificaciones del producto.
+
+## Shipping
+Se utiliza para obtener las opciones de envío del producto. Se debe indicar además del ID de producto, el ID de vendedor dentro del competidor, y el código postal.
+
+### Parámetros específicos de Entrada:
+`itemId`: ID del producto del que se requiere la información.
+`sellerId`: ID del vendedor que ofrece ese producto.
+`postCode`: Código postal para obtener opciones de envío.
+
+### Parámetros específicos de Salida:
+`shipping_options`:Es un objeto que contendrá las distintas opciones de envío para ese producto, y las características de cada uno, con el formato [shipping_options1], [shipping_options2], ...,[shipping_optionsN]. Cada opción de envío contendrá:
+   1. `logistic_type`: Se utiliza cuando existe algún detalle relacionado a la entrega (alguna característica especial del envío). En su defecto el valor debe ser: `normal`
+   2. `shipping_type`: Corresponde a dos valores posibles: `player`(en caso de que el envío lo haga el mismo competidor) ó `seller`(en caso de que el envío lo haga el vendedor del producto (el cual no corresponde al mismo competidor).
+   3. `shipping_cost`: Corresponde al costo de envío.
+   4. `free_shipping`: Es una bandera que indica `true`si el envío es gratuito.
+   5. `fullfillment`: Es una bandera que indica cuando el vendedor se hace cargo del proceso de envío.
+   6. `promesa_lower`: Es el plazo mínimo de entrega del producto indicado por el vendedor.
+   7. `promesa_upper`: Es el plazo máximo de entrega del producto indicado por el vendedor.
+   8. `work_days_until_lower_bound`: Es el plazo mínimo de entrega,en días hábiles, del producto indicado por el vendedor.
+   9. `work_days_until_upper_bound`: Es el plazo máximo de entrega,en días hábiles, del producto indicado por el vendedor.
+   10. `total_days_until_lower_bound`: Es el plazo mínimo de entrega del producto indicado por el vendedor.
+   11. `total_days_until_upper_bound`: Es el plazo máximo de entrega del producto indicado por el vendedor.
+   12. `same_day`: Si el producto llega el mismo día en el que se realiza la consulta.
+   13. `next_day`: Si el producto llega al día siguiente en el que se realiza la consulta.
+   14. `two_day`: Si el producto llega a los dos días desde el día en el que se realiza la consulta.
 
 # Quick Start (cómo utilizar la librería)
 Si bien próximamente se desarrollará una API que cuente con un endpoint para utilizar las fucionalidades de CI-Scrapers, por el momento sólo está desarrollada la librería por lo que para poder utilizarla es necesario acceder a su código fuente y ejecutar el proceso de depuración o debugging, especificando el competidor y el o los plugins que se requieren evaluar, con los valores de entrada que requieran esos plugins seleccionados. 
@@ -197,7 +223,7 @@ Una vez descargado el proyecto, acceder al mismo desde el entorno de desarrollo 
     ]
 }
 ```
-  donde `NNN`será el código del competidor a analizar (por ejemplo `FBC`para "Falabella Chile")
+  donde `NNN`será el código del competidor a analizar (por ejemplo `FBC`para "Falabella Chile"). Se pueden obtener los códigos de los competidores en la sección Lista de Competidores del presente documento. 
 
 <img width="356" alt="vista de carpeta .vscode" src="https://user-images.githubusercontent.com/92391063/179997628-021f584c-7ab9-4619-9282-49a79a94043f.png">
 
@@ -292,9 +318,5 @@ A continuación se listan los competidores que dispone CI-Scrapers. Este proyect
 
 
 # Cómo Contribuir
-
-
-
-texto 1
 
 
