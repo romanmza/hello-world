@@ -1,5 +1,5 @@
 # Readme
-## Introducción
+# Introducción
 El presente documento describe el funcionamiento de la nueva librería CI-Scrapers, así como los pasos necesarios para poder utilizarla.
 CI-Scrapers es una librería desarrollada en Typescript, habiendo tomado como base para el funcionamiento, la librería anterior: Competencia-Scrappers. El objetivo fue implementar una librería más estructurada, y que a la vez se separaran 
 
@@ -143,7 +143,7 @@ CI-Scrapers se diseñó teniendo en cuenta los siguientes principios:
 -Simplicidad
 -Escalabilidad
 
-##Estratificación
+## Estratificación
 El objetivo es poder separar las etapas que competen a todo el proceso de scraping, en distintos subprocesos. De esta forma se logra una mayor escalabilidad, una detección de errores más eficiente y un proceso más simple para incorporar nuevos competidores.
 
 Para ello, se cuentan con tres etapas o subprocesos:
@@ -162,6 +162,45 @@ Hace referencia a todos los procesos que se llevan a cabo en cada competidor par
 Hace referencia al proceso de salida, según los requerimientos para cada plugin. Incluye todo el proceso de validación según el tipo de dato y lo que se espera a la salida. 
 
 ## Simplicidad
+
+## Escalabilidad
+
+# Sistema de Versionado
+CI-Scrapers está diseñada para responder al sistema de Release Process implementado en los proyectos de MELI. El mismo asegura que todas las etapas desde la generación del código fuente hasta su puesta en marcha en amiente productivo, pasen por un proceso de verificación de sintaxis, errores y compatibilidad con versiones anteriores. 
+## Ventajas de Release Process:
+- Rapidez. El flujo basado en eventos del backend, nos permite optimizar al máximo los tiempos de ejecución de cada tarea dentro del proceso.
+
+- Robustez. Una falla en cualquier control de calidad interrumpe el flujo e indica claramente cual fue el error y que se necesita hacer para avanzar al próximo paso.
+
+- Infraestructura Unificada. Tanto el Integrador Continuo como el Build Server comparten infraestructura y se comportan de la misma manera 🙂.
+
+- Soporte dedicado. Cualquier problema con Release Process va a ser atentido directamente por el equipo especialista, apuntando a solucionar los problemas rápidamente y con la menor cantidad de interacciones.
+
+- Ejecución de tests. Se ejecutan todos los tests de la aplicación cuando es necesario. Es decir, que si para un commit ya fueron ejecutados, no se hará nuevamente.
+
+- Chequeos de cobertura de código. Se controlan tanto la cobertura de cada pull request como de la aplicación entera.
+
+- Chequeos de seguridad. Se controla que no existan credenciales hardcodeadas en nuestro código.
+
+- Versiones automáticas. Podemos automatizar el creado de las versiones de nuestras apps.
+
+- Chequeos de calidad de código. Se realizan chequeos sobre el código para detectar problemas de eficiencia, mantenibilidad, legibilidad, etc
+
+
+Para implementar Release Process, se requiere que el sistema de versionado también sea coherente.
+## Estrcutura del versionado
+La nomenclatura de la versión se compone de tres números separados por puntos, por ejemplo:
+
+2.4.13
+
+Cada uno de estos tres números se debe incrementar en forma secuencial (formato N°N°N°) con cada actualización de versión, 
+- El primer número de la izquierda hace referencia a la versión principal de la librería, y se incrementa sólo ante cambios profundos en el funcionamiento en general del proyecto.
+- El segundo número se modifica al agregar a la librería un nuevo feature: puede ser un nuevo competidor, o un nuevo plugin que utilicen todos los competidores. 
+- El tercer número (de la derecha) se incrementa cuando se realizan ajustes/correcciones sobre los plugins/competidores ya integrados
+
+
+# Cómo Contribuir
+
 
 
 texto 1
