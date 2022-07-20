@@ -1,7 +1,7 @@
 # Readme
 # Introducción
-El presente documento describe el funcionamiento de la nueva librería CI-Scrapers, así como los pasos necesarios para poder utilizarla.
-CI-Scrapers es una librería desarrollada en Typescript, habiendo tomado como base para el funcionamiento, la librería anterior: Competencia-Scrappers. El objetivo fue implementar una librería más estructurada, y que a la vez se separaran 
+El presente documento describe el funcionamiento de la nueva librería CI-Scrapers, así como los pasos necesarios para poder utilizarla y agregar nuevos competidores a la misma.
+CI-Scrapers es una librería desarrollada en Typescript, habiendo tomado como base para el funcionamiento, la librería anterior: Competencia-Scrappers. El objetivo de esta mejora fue implementar una sistema estratificado, en donde se separen las etapas de obtención de información, procesamiento y validación de datos, para poder facilitar la escalabilidad y el control de errores. Por otro lado también se optó por el uso de Typescript puesto que este lenguaje posee características que permiten minimizar los errores y escribir código más limpio y más sencillo para realizar pruebas.
 
 # Tabla de Contenido
 
@@ -34,7 +34,7 @@ Hace referencia al proceso de salida, según los requerimientos de los clientes 
 ## Escalabilidad
 
 # Sistema de Versionado
-CI-Scrapers está diseñada para responder al sistema de Release Process implementado en los proyectos de MELI. El mismo asegura que todas las etapas desde la generación del código fuente hasta su puesta en marcha en amiente productivo, pasen por un proceso de verificación de sintaxis, errores y compatibilidad con versiones anteriores. 
+CI-Scrapers está diseñada para responder al sistema de Release Process implementado en los proyectos de MELI. El mismo asegura que todas las etapas desde la generación del código fuente hasta su puesta en marcha en amiente productivo, pasen por un proceso de verificación de sintaxis, errores, pruebas internas y compatibilidad con versiones anteriores. 
 ## Ventajas de Release Process:
 - Rapidez. El flujo basado en eventos del backend, nos permite optimizar al máximo los tiempos de ejecución de cada tarea dentro del proceso.
 
@@ -79,31 +79,93 @@ Se disponen de seis plugins fundamentales:
 - Shipping
 
 ## IdFromURL
-Este plugin se encarga exclusivamente de obtener el ID de ítem según la URL suministrada por el usuario.
+Este plugin se encarga exclusivamente de obtener el ID de producto según la URL suministrada por el usuario.
 ### Parámetros específicos de Entrada:
-- URL
+`urlString`: URL del competidor que lleva a un producto específico del mismo.
 ### Parámetros específicos de Salida:
-- ID de ítem
+`itemId`: ID del producto encontrado en la URL proporcionada.
 
 ## Search
 Este plugin se utiliza para obtener los primeros 20 IDs de resultados según un criterio de búsqueda en el competidor especificado. Por ejemplo: obtener los ID de los primeros 20 resultados de la búsqueda "celular" en el competidor "EXI".  
-El plugin devolverá los 20 primeros IDs (si existen). O un número menos si hubesen menos de 20.
+El plugin devolverá los 20 primeros IDs (si existen), o la cantidad total de coincidencias, si hubesen menos de 20.
 
 ### Parámetros específicos de Entrada:
-- Cadena de búsqueda
+`searchString`: Corresponde a una cadena de texto con el criterio de búsqueda, por ejemplo "televisores hitachi"
+
 ### Parámetros específicos de Salida:
-- Lista de IDs de resultados.
+`itemIds`: Lista de IDs de productos encontrados
 
+##VIP (Vista Interna de Producto)
+Este plugin se utiliza para obtener la información detallada de un producto específico. Para ello se debe conocer el ID de dicho producto para ingresarlo como parámetro de entrada.
+### Parámetros específicos de Entrada:
+`itemId`: ID del producto que se requiere la información.
+### Parámetros específicos de Salida:
+`currency`: Código de la moneda del país de donde pertenezca el competidor (Ejemplo: CLP para Peso Chileno).
 
+`image`: Link desde donde se puede descargar la imagen de producto, suministrada por el competidor.
+
+`price`: Precio del producto.
+
+`title`: Título del producto.
+
+`url`: Link directo a la publicación del competidor donde se encuentra el producto.
+
+`features`: Corresponde a la descripción de producto que coloca el competidor. Esta información no está siempre disponible en todas las publicaciones.
+
+`extra_data`: Conjunto de datos (pares nombre, valor) con información adicional del producto. Esta información no está siempre disponible en todas las publicaciones.
+
+## Sellers
+Se utiliza para obtener de un competidor y un ítem específico, la lista de vendedores de ese ítem.
+
+### Parámetros específicos de Entrada:
+`itemId`: ID del producto del que se requiere la información.
+
+### Parámetros específicos de Salida:
+`id`: ID del competidor. Se compone de el código del mismo (ej: "EXI" para Éxito) + ID de producto.
+
+`name`: Nombre o título del producto.
+
+`permalink`: Link directo a la publicación del competidor donde se encuentra el producto.
+
+`sellers`: Es un objeto que contendrá los vendedores para ese producto, y las características de cada uno, con el formato [seller1], [seller2], ...,[sellerN]. Cada seller contendrá:
+
+   1. `id`: ID del vendedor.
+   2. `name`: nombre del vendedor.
+   3. `permalink`: url dentro del competidor.  
+   4. `first_party`: es una bandera, indicará true si el vendedor coincide con el competidor analizado.
+   5. `fulfillment`: es una bandera que indica si el envío es gratis.
+   6. `seller_winner`: es una bandera que indica si este vendedor es el vendedor principal del producto.
+   7. `reputation`: Es un valor que indica la reputación que posee este vendedor.
+   8. `active_publications`: Es un valor que indica la cantidad de publicaciones activas que tiene este vendedor en este competidor. 
+
+## Offers
+Este plugin se utiliza, dado un competidor, un ID de un vendedor válido dentro del mismo, y un ID de producto, para obtener una lista con las distintas formas de venta y de pago que ofrece ese vendedor para ese producto determinado, se puede obtener información sobre los medios de pago admitidos, cantidad de cuotas, tasa de interés, entre otros.
+
+### Parámetros específicos de Entrada:
+`itemId`: ID del producto del que se requiere la información.
+
+`sellerId`: ID del vendedor que ofrece ese producto.
+
+### Parámetros específicos de Salida:
+`offers`:Es un objeto que contendrá las distintas opciones de pago para ese producto, y las características de cada uno, con el formato [offer1], [offer2], ...,[offerN]. Para las opciones de pago que ofrecen alternativas en cuotas, se considera la primera (pago en 1 cuota) y la última (pago en el mayor número de cuotas, por ejemplo 48). Cada offer contendrá:
+   1. `cashback`: Indica un monto en caso de que exista devolución de dinero en la compra.
+   3. `combo`: Indica si el método de pago es con interés ("L"), sin interés ("J"), o Boleto ("B", se utiliza en Brasil).
+   4. `currency_id`: Código de la moneda del país de donde pertenezca el competidor (Ejemplo: CLP para Peso Chileno).
+   5. `discount`: Es un valor que indica el monto de descuento en la compra (si hubiere).
+   6. `installments`: Es un objeto que contiene los valores de `quantity` (cantidad de cuotas) y `rate`(tasa de interés) para cada offer
+   7. `payment_method_id`: Corresponde al método de pago que tenga el producto, en caso de estar especificado, se coloca por defecto `visa`
+   8. `price`: Precio del producto.
+   9. `rating`: Corresponde a la calificación del producto.
+   10. `review_count`: Corresponde a la cantidad de calificaciones del producto.
 
 # Quick Start (cómo utilizar la librería)
 Si bien próximamente se desarrollará una API que cuente con un endpoint para utilizar las fucionalidades de CI-Scrapers, por el momento sólo está desarrollada la librería por lo que para poder utilizarla es necesario acceder a su código fuente y ejecutar el proceso de depuración o debugging, especificando el competidor y el o los plugins que se requieren evaluar, con los valores de entrada que requieran esos plugins seleccionados. 
 Para ello, se deben seguir los siguientes pasos:
 1. Prerequisitos
 
-1.1 Se deben contar con los permisos para poder descargar el código fuente de CI-Scrapers desde el repositorio de MELI.
-1.2 Tener instalado en el sistema, las versiones de NodeJS 14.19.2 y npm 6.4.17 o superiores
-1.3 Tener instalado un entorno de desarrollo que permita hacer depuración (Recomendado: Visual Studio Code) 
+- Se deben contar con los permisos para poder descargar el código fuente de CI-Scrapers desde el repositorio de MELI.
+- Tener instalado en el sistema, las versiones de NodeJS 14.19.2 y npm 6.4.17 o superiores
+- Tener instalado un entorno de desarrollo que permita hacer depuración (Recomendado: Visual Studio Code) 
 
 2. Instalación y Configuración
 Se debe contar con la librería descargada, en su última versión. Para ello ejecutamos desde la terminal el siguiente comando Git:
