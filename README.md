@@ -95,7 +95,7 @@ El plugin devolverá los 20 primeros IDs (si existen), o la cantidad total de co
 ### Parámetros específicos de Salida:
 `itemIds`: Lista de IDs de productos encontrados
 
-##VIP (Vista Interna de Producto)
+## VIP (Vista Interna de Producto)
 Este plugin se utiliza para obtener la información detallada de un producto específico. Para ello se debe conocer el ID de dicho producto para ingresarlo como parámetro de entrada.
 ### Parámetros específicos de Entrada:
 `itemId`: ID del producto que se requiere la información.
