@@ -83,6 +83,7 @@ Como se puede observar, sólo está habilitada la función de `vip()`, las demá
 4. Pruebas de Scraping
 
 Una vez realizados los pasos anteriores, podemos proceder con la prueba de scraping. La misma se hará sobre el competidor seleccionado en `launch.json`y se utilizarán los plugins habilitados en `NNN.test.ts`. Para ello ejecutamos el debug:
+
 <img width="435" alt="start debugging in VSC" src="https://user-images.githubusercontent.com/92391063/180005034-f7c5bc10-b23b-42a4-8273-3bcd45f272cc.png">
 
 Por consola se podrá visualizar y analizar la respuesta del competidor a la consulta. Para el ejemplo anterior, la siguiente podría ser una respuesta exitosa:
@@ -121,7 +122,48 @@ Como se puede observar, se obtienen diversos valores correspondientes con las ca
 La salida, o lo que entrega cada plugin, corresponde a un objeto, con propiedades y subpropiedades (como `extra_data`), que poseen dentro más atributos (en este ejemplo, `extra_data` cuenta con más características del producto, que el competidor disponibilizó en su página).
 
 
-## subtitulo 1
+## Lista de Competidores
+A continuación se listan los competidores que dispone CI-Scrapers. Este proyecto está en constante actualización por lo que se siguen integrando más competidres en forma permanente.
+
+- ALB : Aliexpréss (Brasil)
+- ALK : Alkosto (Brasil)
+- CEN : Centauro (Brasil)
+- EXI : Éxito (Colombia)
+- FBC : Falabella (Chile)
+- JUM : Jumbo (Argentina)
+- MDR : Madeira Madeira (Brasil)
+- MUS : Musimundo (Argentina)
+- SPC : Shopee (Chile)
+- SPE : Shopee (Brasil)
+- SPM : Shopee (México)
+
+# Estructura y Funcionamiento de la Librería
+CI-Scrapers se diseñó teniendo en cuenta los siguientes principios:
+-Estratificación
+-Simplicidad
+-Escalabilidad
+
+##Estratificación
+El objetivo es poder separar las etapas que competen a todo el proceso de scraping, en distintos subprocesos. De esta forma se logra una mayor escalabilidad, una detección de errores más eficiente y un proceso más simple para incorporar nuevos competidores.
+
+Para ello, se cuentan con tres etapas o subprocesos:
+- Crawling
+- Parsing
+- Scraping
+
+(aquí va el gráfico de estas etapas)
+
+
+1. Crawling
+Incluye todo lo referido a la obtención de la información cruda (o sin procesar) del competidor. Aquí se encuentran todos los procesos como selección de proxies, configuración de headers, reintentos, gestión de errores de conexión/timeout, entre otros
+2. Parsing
+Hace referencia a todos los procesos que se llevan a cabo en cada competidor para procesar y filtrar la información obtenida, en función de lo que se requiera para cada plugin
+3. Scraping
+Hace referencia al proceso de salida, según los requerimientos para cada plugin. Incluye todo el proceso de validación según el tipo de dato y lo que se espera a la salida. 
+
+## Simplicidad
+
+
 texto 1
 
 
