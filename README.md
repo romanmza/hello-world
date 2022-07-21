@@ -19,13 +19,13 @@ Para ello, se cuentan con tres etapas o subprocesos:
 - Parsing
 - Scraping
 
-(aquí va el gráfico de estas etapas)
+<img width="1084" alt="image" src="https://user-images.githubusercontent.com/92391063/180226008-64f8137e-7b19-4085-9aa5-2d4706174a6a.png">
 
 
 1. Crawling
 Incluye todo lo referido a la obtención de la información cruda (o sin procesar) del competidor. Aquí se encuentran todos los procesos como selección de proxies, configuración de headers, request HTLM/API, reintentos, gestión de errores de conexión/timeout, entre otros
 2. Parsing
-Hace referencia a todos los procesos que se llevan a cabo en cada competidor para procesar y filtrar la información obtenida, en función de lo que se requiera para cada plugin. Aquí es donde se desarrolla la mayor tarea al momento de integrar un competidor, ya que cada rival utiliza una metodología en particular para presentar su información y se requiere un análisis en profundidad para uan correcta extracción de la información deseada. 
+Hace referencia a todos los procesos que se llevan a cabo en cada competidor para procesar y filtrar la información obtenida, en función de lo que se requiera para cada plugin. Aquí es donde se desarrolla la mayor tarea al momento de integrar un competidor, ya que cada rival utiliza una metodología en particular para presentar su información y se requiere un análisis en profundidad para una correcta extracción de la información deseada. 
 3. Scraping
 Hace referencia al proceso de salida, según los requerimientos de los clientes que utilizarán esta librería, para cada plugin. Incluye todo el proceso de validación según el tipo de dato y lo que se espera a la salida vs. lo que se obtuvo en el proceso de parsing. 
 
@@ -34,7 +34,7 @@ Hace referencia al proceso de salida, según los requerimientos de los clientes 
 ## Escalabilidad
 
 # Sistema de Versionado
-CI-Scrapers está diseñada para responder al sistema de Release Process implementado en los proyectos de MELI. El mismo asegura que todas las etapas desde la generación del código fuente hasta su puesta en marcha en amiente productivo, pasen por un proceso de verificación de sintaxis, errores, pruebas internas y compatibilidad con versiones anteriores. 
+CI-Scrapers está diseñada para responder al sistema de Release Process implementado en los proyectos de MELI. El mismo asegura que todas las etapas desde la generación del código fuente hasta su puesta en marcha en ambiente productivo, pasen por un proceso de verificación de sintaxis, errores, pruebas internas y compatibilidad con versiones anteriores. 
 ## Ventajas de Release Process:
 - Rapidez. El flujo basado en eventos del backend, nos permite optimizar al máximo los tiempos de ejecución de cada tarea dentro del proceso.
 
@@ -42,7 +42,7 @@ CI-Scrapers está diseñada para responder al sistema de Release Process impleme
 
 - Infraestructura Unificada. Tanto el Integrador Continuo como el Build Server comparten infraestructura y se comportan de la misma manera.
 
-- Soporte dedicado. Cualquier problema con Release Process va a ser atentido directamente por el equipo especialista, apuntando a solucionar los problemas rápidamente y con la menor cantidad de interacciones.
+- Soporte dedicado. Cualquier problema con Release Process va a ser atendido directamente por el equipo especialista, apuntando a solucionar los problemas rápidamente y con la menor cantidad de interacciones.
 
 - Ejecución de tests. Se ejecutan todos los tests de la aplicación cuando es necesario. Es decir, que si para un commit ya fueron ejecutados, no se hará nuevamente.
 
@@ -56,7 +56,7 @@ CI-Scrapers está diseñada para responder al sistema de Release Process impleme
 
 
 Para implementar Release Process, se requiere que el sistema de versionado también sea coherente.
-## Estrcutura del versionado
+## Estructura del versionado
 La nomenclatura de la versión se compone de tres números separados por puntos, por ejemplo:
 
 `2.4.13`
@@ -87,7 +87,7 @@ Este plugin se encarga exclusivamente de obtener el ID de producto según la URL
 
 ## Search
 Este plugin se utiliza para obtener los primeros 20 IDs de resultados según un criterio de búsqueda en el competidor especificado. Por ejemplo: obtener los ID de los primeros 20 resultados de la búsqueda "celular" en el competidor "EXI".  
-El plugin devolverá los 20 primeros IDs (si existen), o la cantidad total de coincidencias, si hubesen menos de 20.
+El plugin devolverá los 20 primeros IDs (si existen), o la cantidad total de coincidencias, si hubiesen menos de 20.
 
 ### Parámetros específicos de Entrada:
 `searchString`: Corresponde a una cadena de texto con el criterio de búsqueda, por ejemplo "televisores hitachi"
@@ -185,9 +185,9 @@ Se utiliza para obtener las opciones de envío del producto. Se debe indicar ade
    14. `two_day`: Si el producto llega a los dos días desde el día en el que se realiza la consulta.
 
 # Quick Start (cómo utilizar la librería)
-Si bien próximamente se desarrollará una API que cuente con un endpoint para utilizar las fucionalidades de CI-Scrapers, por el momento sólo está desarrollada la librería por lo que para poder utilizarla es necesario acceder a su código fuente y ejecutar el proceso de depuración o debugging, especificando el competidor y el o los plugins que se requieren evaluar, con los valores de entrada que requieran esos plugins seleccionados. 
+Si bien próximamente se desarrollará una API que cuente con un endpoint para utilizar las funcionalidades de CI-Scrapers, por el momento sólo está desarrollada la librería por lo que para poder utilizarla es necesario acceder a su código fuente y ejecutar el proceso de depuración o debugging, especificando el competidor y el o los plugins que se requieren evaluar, con los valores de entrada que requieran esos plugins seleccionados. 
 Para ello, se deben seguir los siguientes pasos:
-1. Prerequisitos
+1. Pre-requisitos
 
 - Se deben contar con los permisos para poder descargar el código fuente de CI-Scrapers desde el repositorio de MELI.
 - Tener instalado en el sistema, las versiones de NodeJS 14.19.2 y npm 6.4.17 o superiores
@@ -298,11 +298,11 @@ __proto__: Object
 
 Como se puede observar, se obtienen diversos valores correspondientes con las características del ítem, tales como precio, título, link a la URL donde se encuentra la imagen o foto del producto, entre otros.
 
-La salida, o lo que entrega cada plugin, corresponde a un objeto, con propiedades y subpropiedades (como `extra_data`), que poseen dentro más atributos (en este ejemplo, `extra_data` cuenta con más características del producto, que el competidor disponibilizó en su página).
+La salida, o lo que entrega cada plugin, corresponde a un objeto, con propiedades y subpropiedades (como `extra_data`), que poseen dentro más atributos (en este ejemplo, `extra_data` cuenta con más características del producto, que el competidor disponibiliza en su página).
 
 
 ## Lista de Competidores
-A continuación se listan los competidores que dispone CI-Scrapers. Este proyecto está en constante actualización por lo que se siguen integrando más competidres en forma permanente.
+A continuación se listan los competidores que dispone CI-Scrapers. Este proyecto está en constante actualización por lo que se siguen integrando más competidores en forma permanente.
 
 - ALB : Aliexpréss (Brasil)
 - ALK : Alkosto (Brasil)
